@@ -12,8 +12,8 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:project_id])
     member = Member.find(member_id)
 
-    @project.project_members.build(member: member)
-  
+    @project.project_members.build(member:)
+
     if @project.save
       respond_to do |format|
         format.html { redirect_to redirect_to_path, notice: 'Member added successfully' }

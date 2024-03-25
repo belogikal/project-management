@@ -24,7 +24,7 @@ module ResourceCrud
     if resource.update(resource_params)
       respond_to do |format|
         format.html { redirect_to redirection_path, notice: 'Updated' }
-        format.json { render json: { message: 'Updated', resource: resource } }
+        format.json { render json: { message: 'Updated', resource: } }
       end
     else
       error_response(resource)
@@ -83,7 +83,7 @@ module ResourceCrud
   def error_response(resource, status = :unprocessable_entity)
     respond_to do |format|
       format.html { redirect_back }
-      format.json { render json: { errors: resource.errors.full_messages }, status: status }
+      format.json { render json: { errors: resource.errors.full_messages }, status: }
     end
   end
 end
