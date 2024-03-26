@@ -4,9 +4,11 @@ class TeamsController < ApplicationController
   before_action :find_team, only: [:members]
 
   def members
+    @resources = @team.members
+
     respond_to do |format|
       format.html
-      format.json { render json: @team.members }
+      format.json
     end
   end
 

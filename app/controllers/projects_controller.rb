@@ -4,9 +4,11 @@ class ProjectsController < ApplicationController
   before_action :project, only: %i[members assign_member]
 
   def members
+    @resources = @project.members
+
     respond_to do |format|
       format.html
-      format.json { render json: @project.members }
+      format.json
     end
   end
 

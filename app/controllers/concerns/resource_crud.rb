@@ -9,14 +9,14 @@ module ResourceCrud
     @resources = model_class.all
     respond_to do |format|
       format.html
-      format.json { render json: @resources }
+      format.json
     end
   end
 
   def show
     respond_to do |format|
       format.html
-      format.json { render json: @resource }
+      format.json
     end
   end
 
@@ -26,7 +26,7 @@ module ResourceCrud
     if @resource.update(resource_params)
       respond_to do |format|
         format.html { redirect_to redirection_path, notice: 'Updated' }
-        format.json { render json: { message: 'Updated', resource: } }
+        format.json
       end
     else
       error_response(resource)
@@ -47,7 +47,7 @@ module ResourceCrud
     if @resource.save
       respond_to do |format|
         format.html { redirect_to redirection_path, notice: 'Created' }
-        format.json { render json: { message: 'Created', resource: @resource } }
+        format.json
       end
     else
       error_response(@resource)
