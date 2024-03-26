@@ -1,15 +1,16 @@
 class ProjectsController < ApplicationController
   include ResourceCrud
 
+  before_action :project, only: %i[members assign_member]
+
   def members
     respond_to do |format|
       format.html
-      format.json { render json: project.members }
+      format.json { render json: @project.members }
     end
   end
 
   def assign_member
-    @project = Project.find(params[:project_id])
     member = Member.find(member_id)
 
     @project.project_members.build(member:)
