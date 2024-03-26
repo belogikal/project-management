@@ -42,6 +42,13 @@ RSpec.describe 'Teams', type: :request do
       expect(JSON.parse(response.body)['id']).to eq(team.id)
     end
 
+    it 'Show a team - finds the team with slug' do
+      get "/teams/#{team.slug}", as: :json
+
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)['id']).to eq(team.id)
+    end
+
     it 'returns 404 if team not found' do
       get '/teams/invalid', as: :json
 

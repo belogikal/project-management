@@ -44,6 +44,15 @@ RSpec.describe 'Projects', type: :request do
       expect(body['id']).to eq(project.id)
     end
 
+    it 'Shows a project - finds the project with slug' do
+      get "/projects/#{project.slug}", as: :json
+
+      body = JSON.parse(response.body)
+      expect(response).to have_http_status(200)
+      expect(body).to be_an_instance_of(Hash)
+      expect(body['id']).to eq(project.id)
+    end
+
     it 'returns 404 if project not found' do
       get '/projects/99999', as: :json
 
