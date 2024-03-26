@@ -1,7 +1,9 @@
 module ResourceCrud
   extend ActiveSupport::Concern
-
-  included { skip_before_action :verify_authenticity_token }
+  included do
+    skip_before_action :verify_authenticity_token
+    before_action :resource, only: %w[show edit destroy update]
+  end
 
   def index
     @resources = model_class.all
@@ -14,14 +16,14 @@ module ResourceCrud
   def show
     respond_to do |format|
       format.html
-      format.json { render json: resource }
+      format.json { render json: @resource }
     end
   end
 
   def edit; end
 
   def update
-    if resource.update(resource_params)
+    if @resource.update(resource_params)
       respond_to do |format|
         format.html { redirect_to redirection_path, notice: 'Updated' }
         format.json { render json: { message: 'Updated', resource: } }
@@ -32,7 +34,7 @@ module ResourceCrud
   end
 
   def new
-    resource = model_class.new
+    @resource = model_class.new
 
     respond_to do |format|
       format.html
@@ -42,7 +44,6 @@ module ResourceCrud
 
   def create
     @resource = model_class.new(resource_params)
-
     if @resource.save
       respond_to do |format|
         format.html { redirect_to redirection_path, notice: 'Created' }
@@ -54,7 +55,7 @@ module ResourceCrud
   end
 
   def destroy
-    resource.destroy
+    @resource.destroy
     redirect_to [controller_name.to_sym], notice: 'Deleted'
   end
 
@@ -82,7 +83,7 @@ module ResourceCrud
 
   def error_response(resource, status = :unprocessable_entity)
     respond_to do |format|
-      format.html { redirect_back }
+      format.html { redirect_back(fallback_location: :root_path) }
       format.json { render json: { errors: resource.errors.full_messages }, status: }
     end
   end

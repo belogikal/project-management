@@ -1,0 +1,14 @@
+%h1= @resource.name
+
+%p
+  %strong Slug:
+  = @resource.slug
+%h2= 'Members'
+%ul
+  - @resource.members.each do |member|
+    %li= member.first_name
+
+= form_with(url: project_member_path(@resource), method: :patch, local: true) do |form|
+  .field
+    = form.collection_select :member_id, Member.all, :id, :first_name, { include_blank: true, prompt: 'Add member to project' }
+    = form.submit 'Save'

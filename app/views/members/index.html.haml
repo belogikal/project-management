@@ -1,0 +1,6 @@
+%h1 Members
+
+- @resources.each do |resource|
+  %p
+    = link_to "#{resource.first_name} #{resource.last_name}", resource
+    |  - #{resource.city}, #{resource.state}, #{resource.country}

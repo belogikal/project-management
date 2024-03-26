@@ -1,0 +1,29 @@
+= form_with(model: @resource, local: true) do |form|
+  - if @resource.errors.any?
+    #errors
+      %h2= "#{pluralize(@resource.errors.count, "error")} prohibited this resource from being saved:"
+      %ul
+        - @resource.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = form.label :first_name
+    = form.text_field :first_name
+  .field
+    = form.label :last_name
+    = form.text_field :last_name
+  .field
+    = form.label :city
+    = form.text_field :city
+  .field
+    = form.label :state
+    = form.text_field :state
+  .field
+    = form.label :country
+    = form.text_field :country
+  .field
+    = form.label :team
+    = form.collection_select :team_id, Team.all, :id, :name, include_blank: false
+
+  .actions
+    = form.submit 'Save'

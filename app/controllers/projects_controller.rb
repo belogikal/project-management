@@ -17,7 +17,7 @@ class ProjectsController < ApplicationController
 
     if @project.save
       respond_to do |format|
-        format.html { redirect_to redirect_to_path, notice: 'Member added successfully' }
+        format.html { redirect_to @project, notice: 'Member added successfully' }
         format.json { render json: { message: 'Member added successfully' } }
       end
     else
