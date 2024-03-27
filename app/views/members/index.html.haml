@@ -1,0 +1,17 @@
+.container-fluid.px-3
+  .row.align-items-center.mb-2
+    .col-8
+      %h1.mb-0 Members
+    .col-4.text-end
+      %a.btn.btn-sm.btn-primary{href: new_member_path} Add Member
+
+- @resources.each do |resource|
+  .card.mb-3
+    .card-body
+      %h5.card-title
+        = link_to "#{resource.first_name} #{resource.last_name}", resource
+      %p.card-text
+        | #{resource.city}, #{resource.state}, #{resource.country}
+      %div.text-right.pt-3
+        = link_to "Edit", edit_member_path(resource), class: "btn btn-sm btn-secondary mr-2"
+        = button_to "Delete", member_path(:id => resource.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-danger", style: "padding: 0.375rem 0.75rem; background-color: #dc3545; border-color: #dc3545;"

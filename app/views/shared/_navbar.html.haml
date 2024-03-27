@@ -1,0 +1,15 @@
+.container-flouid
+  %nav.navbar.navbar-expand-lg.bg-light
+    .container
+      %a.navbar-brand{href: '/'}
+        %h3 Management Portal
+      %button.navbar-toggler{type: 'button', 'data-bs-toggle': 'collapse', 'data-bs-target': '#navbarTogglerDemo02', 'aria-controls': 'navbarTogglerDemo02', 'aria-expanded': 'false', 'aria-label': 'Toggle navigation'}
+        %span.navbar-toggler-icon
+      .collapse.navbar-collapse#navbarTogglerDemo02
+        %ul.navbar-nav.me-auto.mb-2.mb-lg-0
+          %li.nav-item
+            %a.nav-link.active{href: members_path, 'aria-current': 'page'} Member
+          %li.nav-item
+            %a.nav-link.active{href: projects_path} Projects
+          %li.nav-item
+            %a.nav-link.active{href: teams_path} Teams
