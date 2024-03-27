@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+  root 'members#index'
   resources :members
   resources :teams do
     get 'members', on: :member
