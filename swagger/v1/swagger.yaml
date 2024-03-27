@@ -1,0 +1,345 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/members":
+    post:
+      summary: Creates a member
+      tags:
+      - Members
+      parameters: []
+      responses:
+        '200':
+          description: member created
+        '422':
+          description: first_name must exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                team_id:
+                  type: integer
+              required:
+              - first_name
+              - last_name
+              - team_id
+        required: true
+    get:
+      summary: Retrieves all teams
+      tags:
+      - Members
+      responses:
+        '200':
+          description: retrieves all the members
+  "/members/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves a member
+      tags:
+      - Members
+      responses:
+        '200':
+          description: member found
+        '404':
+          description: member not found
+    put:
+      summary: Updates a member
+      tags:
+      - Members
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: member updated
+        '404':
+          description: member not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+    delete:
+      summary: Deletes a member
+      tags:
+      - Members
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: member deleted
+        '404':
+          description: member not found
+  "/projects":
+    post:
+      summary: Creates a project
+      tags:
+      - Projects
+      parameters: []
+      responses:
+        '200':
+          description: project created
+        '422':
+          description: name must exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+        required: true
+        description: Project attributes
+    get:
+      summary: Retrieves all projects
+      tags:
+      - Projects
+      responses:
+        '200':
+          description: retrieves all the projects
+  "/projects/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves a project
+      tags:
+      - Projects
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: project found
+        '404':
+          description: project not found
+    put:
+      summary: Updates a project
+      tags:
+      - Projects
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: project updated
+        '404':
+          description: project not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: Deletes a project
+      tags:
+      - Projects
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: project deleted
+        '404':
+          description: project not found
+  "/projects/{project_id}/members":
+    parameters:
+    - name: project_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves all members for a particular project
+      tags:
+      - Projects
+      responses:
+        '200':
+          description: lists all members for a project
+        '404':
+          description: project not found
+  "/projects/{project_id}/member":
+    parameters:
+    - name: project_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: params
+      in: body
+      schema:
+        type: object
+        required:
+        - member_id
+        properties:
+          member_id:
+            type: integer
+    patch:
+      summary: Assigns a project to a member
+      tags:
+      - Projects
+      responses:
+        '200':
+          description: Project assigned to member successfully
+  "/teams":
+    post:
+      summary: Creates a team
+      tags:
+      - Teams
+      parameters: []
+      responses:
+        '200':
+          description: team created
+        '422':
+          description: name must exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+        required: true
+        description: Team attributes
+    get:
+      summary: Retrieves all teams
+      tags:
+      - Teams
+      responses:
+        '200':
+          description: retrieves all the teams
+  "/teams/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves a team
+      tags:
+      - Teams
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: team found
+        '404':
+          description: team not found
+    put:
+      summary: Updates a team
+      tags:
+      - Teams
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: team updated
+        '404':
+          description: team not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: Deletes a team
+      tags:
+      - Teams
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: team deleted
+        '404':
+          description: team not found
+  "/teams/{team_id}/members":
+    parameters:
+    - name: team_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves all members for a particular team
+      tags:
+      - Teams
+      responses:
+        '200':
+          description: lists all members for a team
+        '404':
+          description: team not found
+servers:
+- url: "{local}"
+  variables:
+    local:
+      default: http://localhost:3000

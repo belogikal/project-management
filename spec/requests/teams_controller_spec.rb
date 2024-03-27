@@ -1,118 +1,172 @@
-require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe 'Teams', type: :request do
-  describe 'POST /teams' do
-    it 'creates a team' do
-      team_params = { name: 'Test Team' }
-      post '/teams', params: { team: team_params }, as: :json
+  path '/teams' do
+    post 'Creates a team' do
+      tags 'Teams'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :team, in: :body, schema: {
+                                          type: :object,
+                                          properties: {
+                                            name: { type: :string }
+                                          },
+                                          required: ['name']
+                                        },
+                required: true,
+                description: 'Team attributes',
+                example: {
+                  name: 'Test Team'
+                }
 
-      expect(response).to have_http_status(200)
-      expect(Team.count).to eq(1)
-      expect(Team.last.name).to eq('Test Team')
+      let(:team) { { name: 'Test Team' } }
+
+      response '200', 'team created' do
+        run_test! do
+          expect(response).to have_http_status(200)
+          expect(Team.count).to eq(1)
+          expect(Team.last.name).to eq('Test Team')
+        end
+      end
+
+      response '422', 'name must exist' do
+        let(:team) { { name: nil } }
+        run_test! do
+          expect(response).to have_http_status(422)
+          expect(Team.count).to eq(0)
+        end
+      end
     end
 
-    it 'returns 422 if name is missing' do
-      post '/teams', params: { team: { name: nil } }, as: :json
+    get 'Retrieves all teams' do
+      let!(:team) { Fabricate(:team) }
 
-      expect(response).to have_http_status(422)
-      expect(Team.count).to eq(0)
-    end
-  end
+      tags 'Teams'
+      consumes 'application/json'
+      produces 'application/json'
 
-  describe 'GET /teams' do
-    let!(:team) { Fabricate(:team) }
-
-    it 'get all teams' do
-      get '/teams', as: :json
-
-      body = JSON.parse(response.body)
-      expect(response).to have_http_status(200)
-      expect(body).to be_an_instance_of(Array)
-      expect(body.count).to be > 0
-    end
-  end
-
-  describe 'GET /teams/:id' do
-    let(:team) { Fabricate(:team) }
-
-    it 'Show a team' do
-      get "/teams/#{team.id}", as: :json
-
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)['id']).to eq(team.id)
-    end
-
-    it 'Show a team - finds the team with slug' do
-      get "/teams/#{team.slug}", as: :json
-
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)['id']).to eq(team.id)
-    end
-
-    it 'returns 404 if team not found' do
-      get '/teams/invalid', as: :json
-
-      expect(response).to have_http_status(404)
-      expect(JSON.parse(response.body)['error']).to eq('Record not found')
+      response '200', 'retrieves all the teams' do
+        run_test! do
+          body = JSON.parse(response.body)
+          expect(response).to have_http_status(200)
+          expect(body.count).to be > 0
+        end
+      end
     end
   end
 
-  describe 'PUT /teams/:id' do
-    let!(:team) { Fabricate(:team) }
+  path '/teams/{id}' do
+    parameter name: :id, in: :path, type: :integer
 
-    it 'updates a team' do
-      put "/teams/#{team.id}", params: { team: { name: 'New Name' } }, as: :json
+    get 'Retrieves a team' do
+      tags 'Teams'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :integer
 
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)['resource']['name']).to eq('New Name')
+      let(:id) { Fabricate(:team).id }
+
+      response '200', 'team found' do
+        run_test! do
+          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(200)
+          expect(JSON.parse(response.body)['id']).to eq(id)
+        end
+      end
+
+      response '404', 'team not found' do
+        let(:id) { 'invalid' }
+        run_test! do
+          expect(response).to have_http_status(404)
+          expect(JSON.parse(response.body)['error']).to eq('Record not found')
+        end
+      end
     end
 
-    it 'returns 404 if team not found' do
-      put '/teams/invalid', params: { team: { name: 'New Name' } }, as: :json
+    put 'Updates a team' do
+      tags 'Teams'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :integer
+      parameter name: :team, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: { type: :string }
+        },
+        required: ['name']
+      }
 
-      expect(response).to have_http_status(404)
-      expect(JSON.parse(response.body)['error']).to eq('Record not found')
+      let(:id) { Fabricate(:team).id }
+      let(:team) { { name: 'New Name' } }
+
+      response '200', 'team updated' do
+        run_test! do
+          expect(response).to have_http_status(200)
+          expect(JSON.parse(response.body)['resource']['name']).to eq('New Name')
+        end
+      end
+
+      response '404', 'team not found' do
+        let(:id) { 'invalid' }
+        run_test! do
+          expect(response).to have_http_status(404)
+          expect(JSON.parse(response.body)['error']).to eq('Record not found')
+        end
+      end
+    end
+
+    delete 'Deletes a team' do
+      let!(:team) { Fabricate(:team) }
+
+      tags 'Teams'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :integer
+
+      let(:id) { team.id }
+
+      response '302', 'team deleted' do
+        run_test! do
+          expect(response).to have_http_status(302)
+        end
+      end
+
+      response '404', 'team not found' do
+        let(:id) { 'invalid' }
+        run_test! do
+          expect(response).to have_http_status(404)
+        end
+      end
     end
   end
 
-  describe 'DELETE /teams/:id' do
-    let!(:team) { Fabricate(:team) }
+  path '/teams/{team_id}/members' do
+    parameter name: :team_id, in: :path, type: :integer
 
-    it 'deletes a team' do
-      team_count_before = Team.count
+    get 'Retrieves all members for a particular team' do
+      let!(:team) { Fabricate(:team) }
+      let!(:member) { Fabricate(:member, team:) }
+      let(:team_id) { team.id }
 
-      delete "/teams/#{team.id}", as: :json
+      tags 'Teams'
+      consumes 'application/json'
+      produces 'application/json'
 
-      expect(response).to have_http_status(302)
-      expect(Team.count).to eq(team_count_before - 1)
-    end
+      response '200', 'lists all members for a team' do
+        run_test! do
+          body = JSON.parse(response.body)
+          expect(response).to have_http_status(200)
+          expect(body.last['id']).to eq(member.id)
+        end
+      end
 
-    it 'returns 404 if team not found' do
-      delete '/teams/invalid', as: :json
-
-      expect(response).to have_http_status(404)
-      expect(JSON.parse(response.body)['error']).to eq('Record not found')
-    end
-  end
-
-  describe 'GET /teams/:team_id/members' do
-    let!(:team) { Fabricate(:team) }
-    let!(:member) { Fabricate(:member, team:) }
-
-    it 'gets all members for a team' do
-      get "/teams/#{team.id}/members", as: :json
-
-      body = JSON.parse(response.body)
-      expect(response).to have_http_status(200)
-      expect(body).to be_an_instance_of(Array)
-      expect(body.last['id']).to eq(member.id)
-    end
-
-    it 'returns 404 if team not found' do
-      get '/teams/invalid/members', as: :json
-
-      expect(response).to have_http_status(404)
-      expect(JSON.parse(response.body)['error']).to eq('Record not found')
+      response '404', 'team not found' do
+        let(:team_id) { 'invalid' }
+        run_test! do
+          expect(response).to have_http_status(404)
+          expect(JSON.parse(response.body)['error']).to eq('Record not found')
+        end
+      end
     end
   end
 end
