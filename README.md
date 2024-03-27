@@ -1,24 +1,44 @@
-# README
+# Members Project Management
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Install
+### Clone the repository
 
-Things you may want to cover:
+```shell
+git clone https://github.com/meetcodeman/project-management.git
+cd project-management
+```
+### Dependencies
 
-* Ruby version
+* `ruby -> 3.1.2 `
+* `rails -> 7.1.3`
+### Install ruby
 
-* System dependencies
+Install the right ruby version using [rvm](https://rvm.io/) (it could take a while):
 
-* Configuration
+```shell
+rvm install 3.1.2
+```
 
-* Database creation
+### Install dependencies
 
-* Database initialization
+```shell
+bundle install
+```
 
-* How to run the test suite
+### Setup the database
 
-* Services (job queues, cache servers, search engines, etc.)
+```shell
+rails db:setup
+```
+## Server
 
-* Deployment instructions
+```shell
+rails s
+```
 
-* ...
+## API testing using RSwag
+##### visit [API docs](http://localhost:3000/api-docs/index.html)
+
+```shell
+rake rswag:specs:swaggerize
+```
